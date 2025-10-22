@@ -393,7 +393,12 @@ const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) 
     return `${value.toLocaleString('fr-FR').replace(/\s/g, uiSeparator)} FCFA`;
   };
 
-  const TabButton: React.FC<{tabId: string, activeTab: string, setActiveTab: (id: string) => void, children: React.ReactNode}> = ({ tabId, activeTab, setActiveTab, children }) => (
+  const TabButton: React.FC<{
+    tabId: 'expenses' | 'groceries';
+    activeTab: 'expenses' | 'groceries';
+    setActiveTab: React.Dispatch<React.SetStateAction<'expenses' | 'groceries'>>;
+    children: React.ReactNode;
+  }> = ({ tabId, activeTab, setActiveTab, children }) => (
     <button
       onClick={() => setActiveTab(tabId)}
       className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${activeTab === tabId ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}

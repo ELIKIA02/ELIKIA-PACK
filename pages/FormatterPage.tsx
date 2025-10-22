@@ -119,8 +119,7 @@ const FormatterPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen 
         <main className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 flex-grow">
           <div className="flex flex-col md:flex-row gap-8 h-full">
             
-            {/* Desktop Tools Panel */}
-            <div className="hidden md:flex flex-col space-y-6 md:w-1/3 md:order-2">
+            <div className="flex flex-col space-y-6 md:w-1/3 md:order-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Outils d'Édition</label>
                 <div className="flex items-center justify-center gap-3">
@@ -176,67 +175,10 @@ const FormatterPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen 
               </div>
             </div>
 
-            {/* Text Area & Mobile Tools Panel */}
             <div className="flex flex-col md:w-2/3 md:order-1 h-full">
-              <label htmlFor="editor" className="hidden md:block text-lg font-medium text-gray-800 mb-3">
+              <label htmlFor="editor" className="block text-lg font-medium text-gray-800 mb-3">
                 Votre Texte
               </label>
-
-              {/* --- Mobile Toolbar --- */}
-              <div className="md:hidden flex flex-col gap-3 mb-4">
-                <div className="flex items-center gap-3">
-                    <ActionButton 
-                        onClick={handleUndo} 
-                        disabled={historyIndex === 0} 
-                        aria-label="Annuler" 
-                        iconClassName="fa-solid fa-rotate-left"
-                        bgClassName="from-gray-500 to-gray-600 !w-9 !h-9"
-                    />
-                    <ActionButton 
-                        onClick={handleRedo} 
-                        disabled={historyIndex >= history.length - 1} 
-                        aria-label="Rétablir"
-                        iconClassName="fa-solid fa-rotate-right"
-                        bgClassName="from-gray-500 to-gray-600 !w-9 !h-9"
-                    />
-                    <div className="flex-1 overflow-x-auto">
-                        <div className="flex gap-2">
-                            {TEXT_STYLES.map(style => {
-                                const buttonClasses = `relative group flex-shrink-0 w-9 h-9 flex items-center justify-center text-white font-semibold rounded-lg transition-all duration-200 ease-in-out shadow-md bg-gradient-to-br ${style.className}`;
-                                return (
-                                    <button
-                                        key={style.id}
-                                        onClick={() => handleStyleClick(style.id)}
-                                        className={buttonClasses}
-                                        aria-label={style.name}
-                                    >
-                                        <div className="text-xs transform scale-90">{style.label}</div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-                 <div className="flex gap-3">
-                    <UtilityButton 
-                        onClick={copyToClipboard} 
-                        disabled={!inputText} 
-                        aria-label="Copier tout le texte"
-                        className="w-full bg-blue-500 text-white hover:bg-blue-600 border-transparent font-semibold"
-                    >
-                        <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'} mr-2`}></i> {copied ? 'Copié' : 'Copier'}
-                    </UtilityButton>
-                    <UtilityButton
-                        onClick={clearAll}
-                        aria-label="Tout effacer"
-                        className="w-full bg-red-500 text-white hover:bg-red-600 border-transparent font-semibold"
-                    >
-                        <i className="fa-solid fa-trash-can mr-2"></i> Effacer
-                    </UtilityButton>
-                </div>
-              </div>
-
-
               <TextAreaInput
                 id="editor"
                 value={inputText}
