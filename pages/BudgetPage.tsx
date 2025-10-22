@@ -193,32 +193,26 @@ const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) 
     doc.save('liste-de-courses.pdf');
   };
 
-  const handleDownloadICS = () => {
-      if (groceryList.length === 0) return;
+  const icsDataUri = useMemo(() => {
+    if (groceryList.length === 0) return undefined;
 
-      const EOL = "\r\n";
-      let icsString = "BEGIN:VCALENDAR" + EOL +
-                      "VERSION:2.0" + EOL +
-                      "PRODID:-//ElikiaTools//NONSGML v1.0//EN" + EOL;
+    const EOL = "\r\n";
+    let icsString = "BEGIN:VCALENDAR" + EOL +
+                    "VERSION:2.0" + EOL +
+                    "PRODID:-//ElikiaTools//NONSGML v1.0//EN" + EOL;
 
-      groceryList.forEach(item => {
-          icsString += "BEGIN:VTODO" + EOL;
-          icsString += `DTSTAMP:${new Date().toISOString().replace(/[-:.]/g, '')}Z` + EOL;
-          icsString += `UID:${item.id}@elikiatools.com` + EOL;
-          icsString += `SUMMARY:${item.name} (${formatCurrency(item.price)})` + EOL;
-          icsString += "END:VTODO" + EOL;
-      });
+    groceryList.forEach(item => {
+        icsString += "BEGIN:VTODO" + EOL;
+        icsString += `DTSTAMP:${new Date().toISOString().replace(/[-:.]/g, '')}Z` + EOL;
+        icsString += `UID:${item.id}@elikiatools.com` + EOL;
+        icsString += `SUMMARY:${item.name} (${formatCurrency(item.price, true)})` + EOL;
+        icsString += "END:VTODO" + EOL;
+    });
 
-      icsString += "END:VCALENDAR";
+    icsString += "END:VCALENDAR";
 
-      const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'liste-de-courses.ics';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  };
+    return `data:text/calendar;charset=utf-8,${encodeURIComponent(icsString)}`;
+  }, [groceryList]);
   // --- End Groceries Logic ---
 
   // --- Start Import/Export/PDF Summary Logic ---
@@ -519,10 +513,16 @@ const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) 
                         <i className="fa-solid fa-file-pdf text-red-600"></i>
                         <span>PDF / Feuille</span>
                     </button>
-                    <button onClick={handleDownloadICS} disabled={groceryList.length === 0} className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" title="Ajouter à Rappels (iPhone)">
-                        <i className="fa-brands fa-apple text-black"></i>
-                        <span>Rappels iPhone</span>
-                    </button>
+                    <a
+                      href={icsDataUri}
+                      download="liste-de-courses.ics"
+                      className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors ${!icsDataUri ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                      title="Ajouter à Rappels (iPhone)"
+                      aria-disabled={!icsDataUri}
+                    >
+                      <i className="fa-brands fa-apple text-black"></i>
+                      <span>Rappels iPhone</span>
+                    </a>
                 </div>
               </div>
 
