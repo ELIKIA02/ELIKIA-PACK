@@ -517,7 +517,7 @@ const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) 
                     <button
                       onClick={() => {
                         if (icsDataUri) {
-                          window.open(icsDataUri);
+                          window.location.href = icsDataUri;
                         }
                       }}
                       disabled={!icsDataUri}

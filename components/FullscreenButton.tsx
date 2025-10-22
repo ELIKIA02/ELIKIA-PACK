@@ -12,7 +12,7 @@ const FullscreenButton: React.FC<FullscreenButtonProps> = ({ isFullscreen, onCli
   return (
     <button
       onClick={onClick}
-      className="absolute bottom-4 left-4 z-40 w-10 h-10 bg-white/80 backdrop-blur-sm text-gray-600 hover:text-blue-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+      className="absolute top-1/2 -translate-y-1/2 right-4 z-50 w-10 h-10 bg-white/80 backdrop-blur-sm text-gray-600 hover:text-blue-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all"
       aria-label={label}
       title={label}
     >
