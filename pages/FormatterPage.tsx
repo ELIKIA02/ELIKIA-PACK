@@ -29,6 +29,33 @@ const UtilityButton: React.FC<{onClick: () => void, disabled?: boolean, children
     </button>
 );
 
+const SmallActionButton: React.FC<{
+  onClick: () => void;
+  disabled?: boolean;
+  'aria-label': string;
+  iconClassName: string;
+  bgClassName: string;
+}> = ({ onClick, disabled = false, 'aria-label': ariaLabel, iconClassName, bgClassName }) => {
+  const buttonClasses = `
+    w-8 h-8 flex items-center justify-center text-white font-semibold rounded-lg 
+    transition-all duration-200 ease-in-out
+    shadow-sm
+    focus:outline-none focus:ring-2 focus:ring-blue-400/50
+    disabled:opacity-50 disabled:cursor-not-allowed
+    bg-gradient-to-br ${bgClassName}
+  `;
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={buttonClasses}
+      aria-label={ariaLabel}
+    >
+      <i className={iconClassName}></i>
+    </button>
+  );
+};
+
 const FormatterPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) => {
   const [history, setHistory] = useState(['']);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -119,7 +146,7 @@ const FormatterPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen 
         <main className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 flex-grow">
           <div className="flex flex-col md:flex-row gap-8 h-full">
             
-            <div className="flex flex-col space-y-6 md:w-1/3 md:order-2">
+            <div className="hidden md:flex flex-col space-y-6 md:w-1/3 md:order-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 text-center">Outils d'Édition</label>
                 <div className="flex items-center justify-center gap-3">
@@ -176,9 +203,45 @@ const FormatterPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen 
             </div>
 
             <div className="flex flex-col md:w-2/3 md:order-1 h-full">
-              <label htmlFor="editor" className="block text-lg font-medium text-gray-800 mb-3">
+              <label htmlFor="editor" className="hidden md:block text-lg font-medium text-gray-800 mb-3">
                 Votre Texte
               </label>
+
+              {/* MOBILE Toolbar */}
+              <div className="md:hidden flex items-center gap-3 overflow-x-auto pb-3 mb-3 hide-scrollbar border-b -mx-6 px-6">
+                <SmallActionButton
+                    onClick={handleUndo} 
+                    disabled={historyIndex === 0} 
+                    aria-label="Annuler" 
+                    iconClassName="fa-solid fa-rotate-left"
+                    bgClassName="from-gray-500 to-gray-600 flex-shrink-0"
+                />
+                <SmallActionButton
+                    onClick={handleRedo} 
+                    disabled={historyIndex >= history.length - 1} 
+                    aria-label="Rétablir"
+                    iconClassName="fa-solid fa-rotate-right"
+                    bgClassName="from-gray-500 to-gray-600 flex-shrink-0"
+                />
+                <div className="h-6 w-px bg-gray-300 flex-shrink-0"></div>
+                {TEXT_STYLES.map(style => (
+                  <button
+                      key={style.id}
+                      onClick={() => handleStyleClick(style.id)}
+                      aria-label={style.name}
+                      className={`relative group w-8 h-8 flex-shrink-0 flex items-center justify-center text-white font-semibold rounded-lg 
+                                  transition-colors duration-200 ease-in-out shadow-sm
+                                  focus:outline-none focus:ring-2 focus:ring-blue-400/50
+                                  bg-gradient-to-br ${style.className}`}
+                  >
+                      <div className="text-sm">
+                          {style.label}
+                      </div>
+                  </button>
+                ))}
+              </div>
+
+
               <TextAreaInput
                 id="editor"
                 value={inputText}
@@ -188,6 +251,26 @@ const FormatterPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen 
                 className="flex-grow !min-h-[40vh]"
               />
               <TextCounter text={inputText} />
+
+              <div className="md:hidden mt-4 space-y-3">
+                 <UtilityButton 
+                    onClick={copyToClipboard} 
+                    disabled={!inputText} 
+                    aria-label="Copier tout le texte"
+                    className="w-full bg-blue-500 text-white hover:bg-blue-600 border-transparent font-semibold transform hover:scale-105"
+                  >
+                    <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'} mr-2`}></i> {copied ? 'Copié !' : 'Copier tout'}
+                </UtilityButton>
+
+                <UtilityButton
+                  onClick={clearAll}
+                  aria-label="Tout effacer"
+                  className="w-full bg-red-500 text-white hover:bg-red-600 border-transparent font-semibold transform hover:scale-105"
+                >
+                  <i className="fa-solid fa-trash-can mr-2"></i> Tout Effacer
+                </UtilityButton>
+              </div>
+
             </div>
 
           </div>
