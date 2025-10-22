@@ -19,6 +19,18 @@ const CATEGORY_COLORS: Record<ExpenseCategory, string> = {
   Autre: 'bg-gray-400',
 };
 
+const formatCurrency = (value: number, useDot: boolean = false): string => {
+  if (useDot) {
+    // For PDF, use '.' as separator
+    const formatted = value.toLocaleString('fr-FR').replace(/\s/g, '.');
+    return `${formatted} FCFA`;
+  } else {
+    // For UI, use non-breaking space
+    const formatted = value.toLocaleString('fr-FR').replace(/\s/g, '\u00A0');
+    return `${formatted} FCFA`;
+  }
+};
+
 const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) => {
   const [activeTab, setActiveTab] = useState<'expenses' | 'groceries'>('expenses');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -375,17 +387,6 @@ const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) 
     doc.save(`resume-budget-${todayFilename}.pdf`);
   };
   // --- End Import/Export/PDF Summary Logic ---
-
-  const formatCurrency = (value: number, useDot: boolean = false) => {
-    const separator = useDot ? '.' : ' ';
-    // Use non-breaking space for UI display to prevent line breaks
-    const uiSeparator = useDot ? '.' : '\u00A0';
-    const formatted = value.toLocaleString('fr-FR').replace(/\s/g, separator);
-    if (useDot) {
-      return `${formatted} FCFA`;
-    }
-    return `${value.toLocaleString('fr-FR').replace(/\s/g, uiSeparator)} FCFA`;
-  };
 
   const TabButton: React.FC<{
     tabId: 'expenses' | 'groceries';
