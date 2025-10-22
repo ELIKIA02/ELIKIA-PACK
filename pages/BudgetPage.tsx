@@ -514,16 +514,19 @@ const BudgetPage: React.FC<ToolPageProps> = ({ isFullscreen, setIsFullscreen }) 
                         <i className="fa-solid fa-file-pdf text-red-600"></i>
                         <span>PDF / Feuille</span>
                     </button>
-                    <a
-                      href={icsDataUri}
-                      download="liste-de-courses.ics"
-                      className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors ${!icsDataUri ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                    <button
+                      onClick={() => {
+                        if (icsDataUri) {
+                          window.open(icsDataUri);
+                        }
+                      }}
+                      disabled={!icsDataUri}
+                      className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Ajouter à Rappels (iPhone)"
-                      aria-disabled={!icsDataUri}
                     >
                       <i className="fa-brands fa-apple text-black"></i>
                       <span>Rappels iPhone</span>
-                    </a>
+                    </button>
                 </div>
               </div>
 
